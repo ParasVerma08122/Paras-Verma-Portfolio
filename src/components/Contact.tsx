@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, Linkedin, Github, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, Linkedin, Github, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,14 +8,55 @@ const Contact = () => {
     message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', message: '' });
-    }, 3000);
+    setIsSending(true);
+    setErrorMessage(null);
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    
+    if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY_HERE') {
+      setErrorMessage("Please configure your VITE_WEB3FORMS_ACCESS_KEY in the .env file.");
+      setIsSending(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: `New Portfolio Message from ${formData.name}`,
+          from_name: 'Portfolio Contact Form',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200 || data.success) {
+        setIsSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000);
+      } else {
+        setErrorMessage(data.message || "Something went wrong. Please try again later.");
+      }
+    } catch (error) {
+      setErrorMessage("Failed to send message. Please check your internet connection and try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -121,6 +162,13 @@ const Contact = () => {
           <div className="bg-slate-800/50 backdrop-blur-sm p-8 rounded-xl border border-slate-700">
             <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
 
+            {errorMessage && (
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm flex items-start gap-2">
+                <AlertCircle className="flex-shrink-0 text-red-400" size={18} />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
             {isSubmitted ? (
               <div className="flex flex-col items-center justify-center py-12">
                 <CheckCircle className="text-green-400 mb-4" size={64} />
@@ -135,7 +183,7 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                    Name
+                     Name
                   </label>
                   <input
                     type="text"
@@ -186,10 +234,15 @@ const Contact = () => {
 
                 <button
                   type="submit"
-                  className="w-full px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg font-medium transition-all flex items-center justify-center gap-2 group"
+                  disabled={isSending}
+                  className={`w-full px-6 py-3 bg-cyan-500 text-slate-950 hover:bg-cyan-600 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 group ${
+                    isSending ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Send Message
-                  <Send size={20} className="group-hover:translate-x-1 transition-transform" />
+                  {isSending ? 'Sending...' : 'Send Message'}
+                  {!isSending && (
+                    <Send size={20} className="group-hover:translate-x-1 transition-transform" />
+                  )}
                 </button>
               </form>
             )}
