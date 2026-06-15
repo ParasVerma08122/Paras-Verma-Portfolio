@@ -21,7 +21,7 @@ const About = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-3 text-cyan-400">Who I Am</h3>
                   <p className="text-gray-300 leading-relaxed">
-                    A passionate Java Backend Developer with full stack capabilities, dedicated to
+                    A passionate full stack Developer, dedicated to
                     building scalable and secure systems. I specialize in creating high-performance
                     web applications that can handle real-world challenges and deliver exceptional
                     user experiences.
@@ -59,7 +59,7 @@ const About = () => {
                     <div>
                       <p className="text-gray-300 font-medium">Project Intern</p>
                       <p className="text-cyan-400">MPragati, IIT Delhi</p>
-                      <p className="text-gray-400 text-sm mb-3">3 months</p>
+                      <p className="text-gray-400 text-sm mb-3">6 months</p>
                       <ul className="space-y-2 text-gray-300 text-sm">
                         <li className="flex items-start gap-2">
                           <span className="text-cyan-400 mt-1">•</span>

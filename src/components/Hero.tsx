@@ -30,7 +30,7 @@ const Hero = () => {
             </h1>
 
             <h2 className="text-2xl md:text-3xl text-gray-300 font-medium">
-              Building Scalable Backend Systems & Modern Full Stack Applications
+              Building Modern Full-Stack Applications
             </h2>
 
             <p className="text-lg text-gray-400 leading-relaxed">
