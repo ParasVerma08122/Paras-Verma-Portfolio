@@ -79,7 +79,7 @@ const Hero = () => {
                 <Mail size={24} />
               </a>
               <a
-                href="tel:+918218404990"
+                href="tel:+919258972126"
                 className="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
               >
                 <Phone size={24} />

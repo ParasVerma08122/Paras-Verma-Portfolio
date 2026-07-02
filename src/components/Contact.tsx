@@ -76,8 +76,8 @@ const Contact = () => {
     {
       icon: Phone,
       label: 'Phone',
-      value: '+91-8218404990',
-      href: 'tel:+918218404990',
+      value: '+91-9258972126',
+      href: 'tel:+919258972126',
     },
     {
       icon: Linkedin,
